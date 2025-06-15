@@ -192,6 +192,12 @@ li {
     flex-wrap: nowrap;
 }
 
+.recipe-steps {
+    margin-top: 1em;
+    font-size: 1.1em;
+    line-height: 1.1;
+}
+
 /* Remove column layout for these on mobile */
 @media (max-width: 500px) {
     .slider-container,
@@ -199,10 +205,6 @@ li {
         padding: 1em 0.5em;
         max-width: 100%;
         margin: 1em auto;
-    }
-    
-    .recipe-title {
-        font-size: 1.1em;
     }
 
     .value {
