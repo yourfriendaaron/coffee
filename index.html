@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Grams of Coffee Slider</title>
+</head>
+
+<style>
+    body {
+        background: #000000;
+        color: #e0d6ff;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    .slider-container {
+        background: #000000;
+        padding: 2em;
+        border-radius: 1em;
+        margin: 2em auto 1em auto;
+        width: 320px;
+        box-shadow: 0 2px 16px #0004;
+    }
+
+    grams-label {
+        font-size: 1.2em;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+
+    .value {
+        color: #d500f9;
+        font-weight: bold;
+        font-size: 1.3em;
+        margin-left: 0.5em;
+    }
+
+    .ratio-selector {
+        margin-top: 1.5em;
+        margin-bottom: 1em;
+        display: flex;
+        gap: 1em;
+        align-items: center;
+    }
+
+    .ratio-option {
+        color: #d500f9;
+        font-weight: bold;
+        font-size: 1em;
+        cursor: pointer;
+        padding: 0.3em 0.8em;
+        border-radius: 0.5em;
+        border: 2px solid transparent;
+        transition: border 0.15s, background 0.15s;
+        user-select: none;
+    }
+
+    .ratio-option.selected {
+        border: 2px solid #a21caf;
+        background: #2d1a4d;
+        color: #fff;
+    }
+
+    input[type="range"] {
+        width: 100%;
+        margin-top: 1em;
+        accent-color: #d500f9;
+        background: transparent;
+    }
+
+    .recipe-container {
+        background: #22163a;
+        color: #eee;
+        padding: 2em;
+        border-radius: 1em;
+        margin: 0 auto 2em auto;
+        width: 320px;
+        box-shadow: 0 2px 16px #0004;
+        border: 1px solid #a21caf;
+    }
+
+    .recipe-title {
+        font-size: 1.3em;
+        color: #ffffff;
+        margin-bottom: 1em;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+
+    .fire-emoji {
+        font-size: 1.2em;
+    }
+
+    .ice-emoji {
+        font-size: 1.2em;
+        margin-right: 8px;
+        filter: drop-shadow(0 0 4px #a21caf);
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    li {
+        margin-bottom: 0.7em;
+        font-size: 1.1em;
+    }
+
+    #grind-value,
+    #bloom-value,
+    #pour-value,
+    #ice-value,
+    #iced-pour1,
+    #iced-pour2,
+    #iced-pour3 {
+        color: #d500f9;
+        font-weight: bold;
+    }
+
+    .infobox {
+        background: #2d1a4d;
+        color: #b39ddb;
+        border-left: 4px solid #a21caf;
+        padding: 0.7em 1em;
+        border-radius: 0.5em;
+        margin-bottom: 1em;
+        font-size: 0.98em;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+
+    .tip-emoji {
+        font-size: 1.1em;
+    }
+
+    .iced-ratio-label {
+        color: #a78bfa;
+        font-weight: bold;
+        margin-bottom: 0.7em;
+        font-size: 1.08em;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        display: none; /* hidden */
+    }
+</style>
+
+<body>
+    <div class="slider-container">
+        <grams-label for="coffee-slider">
+            Grams of coffee
+            <span class="value" id="coffee-value">25</span>
+        </grams-label>
+        <input type="range" id="coffee-slider" min="10" max="40" value="18">
+
+        <div class="ratio-selector">
+            <span style="color:#fff;">Ratio:</span>
+            <span class="ratio-option selected" data-ratio="14">Tight<br>(1:14)</span>
+            <span class="ratio-option" data-ratio="16">Normal<br>(1:16)</span>
+            <span class="ratio-option" data-ratio="18">Wide<br>(1:18)</span>
+        </div>
+    </div>
+
+    <div class="recipe-container">
+        <div class="recipe-title"><span class="fire-emoji">🔥</span>Hot Recipe</div>
+        <ul>
+            <li>Grind <span id="grind-value">17.5</span> g</li>
+            <li>Bloom to <span id="bloom-value">52.5</span> g</li>
+            <li>Pour to <span id="pour-value">280</span> g</li>
+        </ul>
+    </div>
+
+    <div class="recipe-container">
+        <div class="recipe-title"><span class="ice-emoji">🧊</span>Iced Recipe</div>
+        <div class="infobox"><span class="tip-emoji">💡</span>Grind finer than usual</div>
+        <div class="iced-ratio-label" id="iced-ratio-label">Normal (1:10)</div>
+        <ul>
+            <li>Add <span id="ice-value">78.8</span> g ice to glass</li>
+            <li>Pour to <span id="iced-pour1">54.0</span> g</li>
+            <li>- <i>Agitate</i></li>
+            <li>0:40 Pour heavy to <span id="iced-pour2">120.0</span> g</li>
+            <li>1:10 Pour to <span id="iced-pour3">180.0</span> g</li>
+            <li>- <i>Stir</i> 3 times</li>
+            <li>2:10 Finish</li>
+        </ul>
+    </div>
+
+    <script>
+        const slider = document.getElementById('coffee-slider');
+        const valueDisplay = document.getElementById('coffee-value');
+        const grindValue = document.getElementById('grind-value');
+        const bloomValue = document.getElementById('bloom-value');
+        const pourValue = document.getElementById('pour-value');
+
+        // Ratio selector logic
+        const ratioOptions = Array.from(document.querySelectorAll('.ratio-option'));
+        let selectedRatio = 14; // default
+
+        // Iced recipe elements
+        const iceValue = document.getElementById('ice-value');
+        const icedPour1 = document.getElementById('iced-pour1');
+        const icedPour2 = document.getElementById('iced-pour2');
+        const icedPour3 = document.getElementById('iced-pour3');
+        const icedRatioLabel = document.getElementById('iced-ratio-label');
+
+        // Iced ratios mapping
+        const icedRatios = [
+            { name: "Tight", ratio: 9, label: "Tight (1:9)" },
+            { name: "Normal", ratio: 10, label: "Normal (1:10)" },
+            { name: "Wide", ratio: 11, label: "Wide (1:11)" }
+        ];
+
+        function getSelectedRatio() {
+            return selectedRatio;
+        }
+
+        // Map hot ratio to iced ratio index
+        function getIcedRatioIndex() {
+            if (selectedRatio === 14) return 0; // tight
+            if (selectedRatio === 16) return 1; // normal
+            if (selectedRatio === 18) return 2; // wide
+            return 1; // default to normal
+        }
+
+        function updateRecipe() {
+            const grind = parseFloat(slider.value);
+            const ratio = getSelectedRatio();
+            const bloom = +(grind * 3).toFixed(1);
+            const pour = +(grind * ratio).toFixed(1);
+            valueDisplay.textContent = grind;
+            grindValue.textContent = grind;
+            bloomValue.textContent = bloom;
+            pourValue.textContent = pour;
+
+            // Iced recipe calculations
+            const icedIdx = getIcedRatioIndex();
+            const iced = icedRatios[icedIdx];
+            icedRatioLabel.textContent = iced.label;
+            const icedRatio = iced.ratio;
+
+            const ice = +(grind * 4.375).toFixed(1);
+            const pour1 = +(grind * 3).toFixed(1);
+            const pour2 = +((grind * icedRatio) * 2 / 3).toFixed(1);
+            const pour3 = +(grind * icedRatio).toFixed(1);
+
+            iceValue.textContent = ice;
+            icedPour1.textContent = pour1;
+            icedPour2.textContent = pour2;
+            icedPour3.textContent = pour3;
+        }
+
+        // Ratio option click event
+        ratioOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                ratioOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                selectedRatio = parseInt(option.getAttribute('data-ratio'), 10);
+                updateRecipe();
+            });
+        });
+
+        slider.addEventListener('input', updateRecipe);
+        updateRecipe();
+    </script>
+</body>
+
+</html>
