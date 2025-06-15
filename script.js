@@ -1,6 +1,5 @@
 const slider = document.getElementById('coffee-slider');
 const valueInput = document.getElementById('coffee-value');
-const grindValue = document.getElementById('grind-value');
 const bloomValue = document.getElementById('bloom-value');
 const pourValue = document.getElementById('pour-value');
 
