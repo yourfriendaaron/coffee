@@ -5,7 +5,7 @@ const pourValue = document.getElementById('pour-value');
 
 // Ratio selector logic
 const ratioOptions = Array.from(document.querySelectorAll('.ratio-option'));
-let selectedRatio = 14; // default
+let selectedRatio = 16; // default (matches .selected in HTML)
 
 // Iced recipe elements
 const iceValue = document.getElementById('ice-value');
@@ -39,6 +39,8 @@ function updateRecipe(grind) {
     }
     grind = Math.max(10, Math.min(40, Math.round(grind)));
     const ratio = getSelectedRatio();
+
+    // Hot recipe calculations
     const bloom = Math.round(grind * 3);
     const pour = Math.round(grind * ratio);
     valueInput.value = grind;
@@ -69,12 +71,9 @@ slider.addEventListener('input', () => {
     updateRecipe(val);
 });
 
-// Allow typing freely in the number box
+// Allow typing freely in the number box, only update if valid and don't clamp
 valueInput.addEventListener('input', () => {
     let val = parseInt(valueInput.value, 10);
-    if (!isNaN(val)) {
-        updateRecipe(val);
-    }
 });
 
 // Clamp and sync on blur or enter

@@ -33,13 +33,15 @@ body {
     border: 1px solid #a21caf;
 }
 
-grams-label {
+.grams-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
     font-size: 1.2em;
     color: #ffffff;
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    flex-wrap: wrap;
+    gap: 0;
+    flex-wrap: nowrap;
 }
 
 .value {
@@ -50,15 +52,18 @@ grams-label {
     width: 3.5em;
     min-width: 0;
     box-sizing: border-box;
+    text-align: right;
 }
 
 .ratio-selector {
     margin-top: 1.5em;
     margin-bottom: 1em;
     display: flex;
-    gap: 1em;
+    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    width: 100%;
+    gap: 0;
+    flex-wrap: nowrap;
 }
 
 .ratio-option {
@@ -89,6 +94,14 @@ input[type="range"] {
 
 .ratio-text {
     color: #fff;
+    font-size: 1.2em;
+    margin-right: 1em;
+    white-space: nowrap;
+}
+
+.ratio-options {
+    display: flex;
+    gap: 1em;
 }
 
 .recipe-title {
@@ -168,7 +181,7 @@ li {
     .recipe-title {
         font-size: 1.1em;
     }
-    grams-label {
+    .grams-label {
         font-size: 1em;
         flex-direction: column;
         align-items: flex-start;
@@ -180,8 +193,13 @@ li {
         width: 100%;
     }
     .ratio-selector {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 0.5em;
-        font-size: 0.95em;
+    }
+    .ratio-options {
+        gap: 0.5em;
+        width: 100%;
     }
     li {
         font-size: 1em;
