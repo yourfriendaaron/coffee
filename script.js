@@ -35,13 +35,13 @@ function getIcedRatioIndex() {
 
 function updateRecipe(grind) {
     if (typeof grind === "undefined") {
-        grind = parseFloat(slider.value);
+        grind = parseInt(slider.value, 10);
     }
-    grind = Math.max(10, Math.min(40, grind));
+    grind = Math.max(10, Math.min(40, Math.round(grind)));
     const ratio = getSelectedRatio();
-    const bloom = +(grind * 3).toFixed(1);
-    const pour = +(grind * ratio).toFixed(1);
-    grindValue.textContent = grind;
+    const bloom = Math.round(grind * 3);
+    const pour = Math.round(grind * ratio);
+    valueInput.value = grind;
     bloomValue.textContent = bloom;
     pourValue.textContent = pour;
 
@@ -51,10 +51,10 @@ function updateRecipe(grind) {
     icedRatioLabel.textContent = iced.label;
     const icedRatio = iced.ratio;
 
-    const ice = +(grind * 4.375).toFixed(1);
-    const pour1 = +(grind * 3).toFixed(1);
-    const pour2 = +((grind * icedRatio) * 2 / 3).toFixed(1);
-    const pour3 = +(grind * icedRatio).toFixed(1);
+    const ice = Math.round(grind * 4.375);
+    const pour1 = Math.round(grind * 3);
+    const pour2 = Math.round((grind * icedRatio) * 2 / 3);
+    const pour3 = Math.round(grind * icedRatio);
 
     iceValue.textContent = ice;
     icedPour1.textContent = pour1;
@@ -64,16 +64,14 @@ function updateRecipe(grind) {
 
 // Sync slider to number input
 slider.addEventListener('input', () => {
-    const val = parseFloat(slider.value);
+    const val = parseInt(slider.value, 10);
     valueInput.value = val;
     updateRecipe(val);
 });
 
 // Allow typing freely in the number box
 valueInput.addEventListener('input', () => {
-    // Don't update slider or clamp yet, just let user type
-    // Optionally, you can update the recipe live if the value is valid
-    let val = parseFloat(valueInput.value);
+    let val = parseInt(valueInput.value, 10);
     if (!isNaN(val)) {
         updateRecipe(val);
     }
@@ -81,7 +79,7 @@ valueInput.addEventListener('input', () => {
 
 // Clamp and sync on blur or enter
 valueInput.addEventListener('change', () => {
-    let val = parseFloat(valueInput.value);
+    let val = parseInt(valueInput.value, 10);
     if (isNaN(val)) val = 10;
     val = Math.max(10, Math.min(40, val));
     valueInput.value = val;
@@ -95,10 +93,10 @@ ratioOptions.forEach(option => {
         ratioOptions.forEach(opt => opt.classList.remove('selected'));
         option.classList.add('selected');
         selectedRatio = parseInt(option.getAttribute('data-ratio'), 10);
-        updateRecipe(parseFloat(valueInput.value));
+        updateRecipe(parseInt(valueInput.value, 10));
     });
 });
 
 // Initialize
 slider.value = valueInput.value;
-updateRecipe(parseFloat(slider.value));
+updateRecipe(parseInt(slider.value, 10));
