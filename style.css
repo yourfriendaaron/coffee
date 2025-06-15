@@ -87,6 +87,10 @@ input[type="range"] {
     background: transparent;
 }
 
+.ratio-text {
+    color: #fff;
+}
+
 .recipe-title {
     font-size: 1.3em;
     color: #ffffff;

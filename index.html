@@ -6,6 +6,7 @@
     <title>Grams of Coffee Slider</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 </head>
 
 <body>
@@ -26,7 +27,7 @@
         <input type="range" id="coffee-slider" min="10" max="40" value="18">
 
         <div class="ratio-selector">
-            <span style="color:#fff;">Ratio:</span>
+            <span class="ratio-text">Ratio:</span>
             <span class="ratio-option selected" data-ratio="14">Tight<br>(1:14)</span>
             <span class="ratio-option" data-ratio="16">Normal<br>(1:16)</span>
             <span class="ratio-option" data-ratio="18">Wide<br>(1:18)</span>
@@ -36,7 +37,6 @@
     <div class="recipe-container">
         <div class="recipe-title"><span class="fire-emoji">🔥</span>Hot Recipe</div>
         <ul>
-
             <li>Bloom to <span id="bloom-value">52.5</span> g</li>
             <li>Pour to <span id="pour-value">280</span> g</li>
         </ul>
