@@ -55,17 +55,6 @@ body {
     text-align: right;
 }
 
-.ratio-selector {
-    margin-top: 1.5em;
-    margin-bottom: 1em;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    gap: 0;
-    flex-wrap: nowrap;
-}
-
 .ratio-option {
     color: #d500f9;
     font-weight: bold;
@@ -101,7 +90,9 @@ input[type="range"] {
 
 .ratio-options {
     display: flex;
-    gap: 1em;
+    gap: 0.5em;
+    flex-shrink: 1;
+    flex-wrap: nowrap;
 }
 
 .recipe-title {
@@ -170,7 +161,38 @@ li {
     display: none; /* hidden */
 }
 
-/* Responsive styles */
+/* Ensure these always stay on one line */
+.grams-label,
+.ratio-selector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;      /* Prevent wrapping */
+    width: 100%;
+    min-width: 0;
+    gap: 0.5em;
+}
+
+/* Prevent input and ratio options from growing too wide */
+.grams-label .value {
+    width: 3.5em;
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+.ratio-text {
+    white-space: nowrap;
+    margin-right: 1em;
+}
+
+.ratio-options {
+    display: flex;
+    gap: 0.5em;
+    flex-shrink: 1;
+    flex-wrap: nowrap;
+}
+
+/* Remove column layout for these on mobile */
 @media (max-width: 500px) {
     .slider-container,
     .recipe-container {
@@ -178,28 +200,19 @@ li {
         max-width: 100%;
         margin: 1em auto;
     }
+    
     .recipe-title {
         font-size: 1.1em;
     }
-    .grams-label {
-        font-size: 1em;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.3em;
-    }
+
     .value {
         font-size: 1.1em;
         margin-left: 0;
         width: 100%;
     }
-    .ratio-selector {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5em;
-    }
+
     .ratio-options {
-        gap: 0.5em;
-        width: 100%;
+        gap: 0.3em;
     }
     li {
         font-size: 1em;

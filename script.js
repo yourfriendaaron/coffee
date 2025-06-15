@@ -99,3 +99,8 @@ ratioOptions.forEach(option => {
 // Initialize
 slider.value = valueInput.value;
 updateRecipe(parseInt(slider.value, 10));
+
+// Highlight all text when the grams input is focused
+valueInput.addEventListener('focus', function() {
+    this.select();
+});
