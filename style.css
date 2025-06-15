@@ -97,11 +97,8 @@ input[type="range"] {
     gap: 0.5em;
 }
 
+.ice-emoji,
 .fire-emoji {
-    font-size: 1.2em;
-}
-
-.ice-emoji {
     font-size: 1.2em;
     margin-right: 8px;
     filter: drop-shadow(0 0 4px #a21caf);
@@ -118,7 +115,6 @@ li {
     font-size: 1.1em;
 }
 
-#grind-value,
 #bloom-value,
 #pour-value,
 #ice-value,

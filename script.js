@@ -39,8 +39,6 @@ function updateRecipe(grind) {
         grind = parseFloat(slider.value);
     }
     grind = Math.max(10, Math.min(40, grind));
-    slider.value = grind;
-    valueInput.value = grind;
     const ratio = getSelectedRatio();
     const bloom = +(grind * 3).toFixed(1);
     const pour = +(grind * ratio).toFixed(1);
@@ -67,13 +65,28 @@ function updateRecipe(grind) {
 
 // Sync slider to number input
 slider.addEventListener('input', () => {
-    updateRecipe(parseFloat(slider.value));
+    const val = parseFloat(slider.value);
+    valueInput.value = val;
+    updateRecipe(val);
 });
 
-// Sync number input to slider
+// Allow typing freely in the number box
 valueInput.addEventListener('input', () => {
+    // Don't update slider or clamp yet, just let user type
+    // Optionally, you can update the recipe live if the value is valid
+    let val = parseFloat(valueInput.value);
+    if (!isNaN(val)) {
+        updateRecipe(val);
+    }
+});
+
+// Clamp and sync on blur or enter
+valueInput.addEventListener('change', () => {
     let val = parseFloat(valueInput.value);
     if (isNaN(val)) val = 10;
+    val = Math.max(10, Math.min(40, val));
+    valueInput.value = val;
+    slider.value = val;
     updateRecipe(val);
 });
 
@@ -83,8 +96,10 @@ ratioOptions.forEach(option => {
         ratioOptions.forEach(opt => opt.classList.remove('selected'));
         option.classList.add('selected');
         selectedRatio = parseInt(option.getAttribute('data-ratio'), 10);
-        updateRecipe();
+        updateRecipe(parseFloat(valueInput.value));
     });
 });
 
+// Initialize
+slider.value = valueInput.value;
 updateRecipe(parseFloat(slider.value));
