@@ -47,6 +47,7 @@ function updateRecipe(grind) {
     }
     grind = Math.max(10, Math.min(40, Math.round(grind)));
     const ratio = getSelectedRatio();
+
     const bloom = Math.round(grind * 3);
     const pour = Math.round(grind * ratio);
     valueInput.value = grind;
