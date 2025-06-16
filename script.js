@@ -33,6 +33,14 @@ function getIcedRatioIndex() {
     return 1; // default to normal
 }
 
+// Prevent non-numeric input in the number input
+function isNumberKey(evt) {
+  var charCode = (evt.which) ? evt.which : evt.keyCode
+  if (charCode > 31 && (charCode < 48 || charCode > 57))
+    return false;
+  return true;
+}
+
 function updateRecipe(grind) {
     if (typeof grind === "undefined") {
         grind = parseInt(slider.value, 10);
@@ -74,15 +82,20 @@ slider.addEventListener('input', () => {
 // Allow typing freely in the number box, only update if valid and don't clamp
 valueInput.addEventListener('input', () => {
     let val = parseInt(valueInput.value, 10);
-    if (!isNaN(val)) {
-        updateRecipe(val);
+    // If the input is blank, set to 20 and update everything
+    if (valueInput.value === "") {
+        valueInput.value = 10;
+        slider.value = 10;
+        updateRecipe(10);
+        return;
     }
 });
 
 // Clamp and sync on blur or enter
 valueInput.addEventListener('change', () => {
     let val = parseInt(valueInput.value, 10);
-    if (isNaN(val)) val = 10;
+    // If the input is blank or not a number, set to 10
+    if (valueInput.value === "" || isNaN(val)) val = 10;
     val = Math.max(10, Math.min(40, val));
     valueInput.value = val;
     slider.value = val;
