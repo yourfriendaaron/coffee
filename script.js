@@ -143,8 +143,8 @@ const translations = {
         icedRatioTight: "เข้ม (1:9)",
         icedRatioNormal: "ปกติ (1:10)",
         icedRatioWide: "อ่อน (1:11)",
-        thai: "English",
-        english: "ภาษาไทย",
+        thai: "ภาษาไทย",
+        english: "English",
         addIceSuffix: " กรัม น้ำแข็งลงแก้ว",
         gramsSuffix: " กรัม",
         stirText: "- คน 3 ครั้ง"
