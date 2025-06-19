@@ -180,9 +180,11 @@ input[type="range"] {
 #bloom-value,
 #pour-value,
 #ice-value,
+#iced-bloom,
 #iced-pour1,
 #iced-pour2,
-#iced-pour3 {
+#iced-pour3,
+#iced-ice {
     color: #d500f9;
     font-weight: bold;
 }
