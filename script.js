@@ -21,24 +21,44 @@ const icedRatios = [
     { name: "Wide", ratio: 11, label: ["Wide (1:11)", "อ่อน (1:11)"] }
 ];
 
+// Only Thai translations, English uses HTML defaults
+const translationsTH = {
+    gramsLabel: "กรัมของกาแฟ",
+    ratio: "อัตราส่วน",
+    ratioTight: "เข้ม<br>(1:14)",
+    ratioNormal: "ปกติ<br>(1:16)",
+    ratioWide: "อ่อน<br>(1:18)",
+    hotRecipe: "สูตรร้อน",
+    icedRecipe: "สูตรเย็น",
+    bloom: "บลูมถึง",
+    pour: "เทถึง",
+    addIce: "เติมน้ำแข็ง",
+    agitate: "- เขย่า",
+    pourHeavy: "0:40 เทแรงถึง",
+    pourTo: "1:10 เทถึง",
+    stir: "- คน 3 ครั้ง",
+    finish: "2:10 เสร็จสิ้น",
+    grindFiner: "บดให้ละเอียดกว่าปกติ",
+    icedRatioTight: "เข้ม (1:9)",
+    icedRatioNormal: "ปกติ (1:10)",
+    icedRatioWide: "อ่อน (1:11)",
+    langBtn: "English",
+    addIceSuffix: " กรัม น้ำแข็งลงแก้ว",
+    gramsSuffix: " กรัม",
+    stirText: "- คน 3 ครั้ง"
+};
+
+let currentLang = 'en';
+
 function getSelectedRatio() {
     return selectedRatio;
 }
 
-// Map hot ratio to iced ratio index
 function getIcedRatioIndex() {
     if (selectedRatio === 14) return 0; // tight
     if (selectedRatio === 16) return 1; // normal
     if (selectedRatio === 18) return 2; // wide
     return 1; // default to normal
-}
-
-// Prevent non-numeric input in the number input
-function isNumberKey(evt) {
-  var charCode = (evt.which) ? evt.which : evt.keyCode
-  if (charCode > 31 && (charCode < 48 || charCode > 57))
-    return false;
-  return true;
 }
 
 function updateRecipe(grind) {
@@ -84,12 +104,15 @@ slider.addEventListener('input', () => {
 // Allow typing freely in the number box, only update if valid and don't clamp
 valueInput.addEventListener('input', () => {
     let val = parseInt(valueInput.value, 10);
-    // If the input is blank, set to 20 and update everything
+    // If the input is blank, set to 10 and update everything
     if (valueInput.value === "") {
         valueInput.value = 10;
         slider.value = 10;
         updateRecipe(10);
         return;
+    }
+    if (!isNaN(val)) {
+        updateRecipe(val);
     }
 });
 
@@ -122,115 +145,110 @@ ratioOptions.forEach(option => {
 
 // --- Language toggle logic ---
 
-const translations = {
-    th: {
-        gramsLabel: "กรัมของกาแฟ",
-        ratio: "อัตราส่วน",
-        ratioTight: "เข้ม<br>(1:14)",
-        ratioNormal: "ปกติ<br>(1:16)",
-        ratioWide: "อ่อน<br>(1:18)",
-        hotRecipe: "สูตรร้อน",
-        icedRecipe: "สูตรเย็น",
-        bloom: "บลูมถึง",
-        pour: "เทถึง",
-        addIce: "เติมน้ำแข็ง",
-        agitate: "- เขย่า",
-        pourHeavy: "0:40 เทแรงถึง",
-        pourTo: "1:10 เทถึง",
-        stir: "- คน 3 ครั้ง",
-        finish: "2:10 เสร็จสิ้น",
-        grindFiner: "บดให้ละเอียดกว่าปกติ",
-        icedRatioTight: "เข้ม (1:9)",
-        icedRatioNormal: "ปกติ (1:10)",
-        icedRatioWide: "อ่อน (1:11)",
-        thai: "ภาษาไทย",
-        english: "English",
-        addIceSuffix: " กรัม น้ำแข็งลงแก้ว",
-        gramsSuffix: " กรัม",
-        stirText: "- คน 3 ครั้ง"
-    },
-    en: {
-        gramsLabel: "Grams of coffee",
-        ratio: "Ratio",
-        ratioTight: "Tight<br>(1:14)",
-        ratioNormal: "Normal<br>(1:16)",
-        ratioWide: "Wide<br>(1:18)",
-        hotRecipe: "Hot Recipe",
-        icedRecipe: "Iced Recipe",
-        bloom: "Bloom to",
-        pour: "Pour to",
-        addIce: "Add",
-        agitate: "- Agitate",
-        pourHeavy: "0:40 Pour heavy to",
-        pourTo: "1:10 Pour to",
-        stir: "- Stir 3 times",
-        finish: "2:10 Finish",
-        grindFiner: "Grind finer than usual",
-        icedRatioTight: "Tight (1:9)",
-        icedRatioNormal: "Normal (1:10)",
-        icedRatioWide: "Wide (1:11)",
-        thai: "ภาษาไทย",
-        english: "English",
-        addIceSuffix: " g ice to glass",
-        gramsSuffix: " g",
-        stirText: "- Stir 3 times"
-    }
-};
-
-let currentLang = 'en';
-
 function setLanguage(lang) {
     currentLang = lang;
-    const t = translations[lang];
 
-    // Grams label
-    document.querySelector('.grams-label').childNodes[0].nodeValue = t.gramsLabel + " ";
+    if (lang === 'th') {
+        // Grams label
+        document.querySelector('.grams-label').childNodes[0].nodeValue = translationsTH.gramsLabel + " ";
 
-    // Ratio text
-    document.querySelector('.ratio-text').textContent = t.ratio;
+        // Ratio text
+        document.querySelector('.ratio-text').textContent = translationsTH.ratio;
 
-    // Ratio options
-    const ratioOpts = document.querySelectorAll('.ratio-option');
-    ratioOpts[0].innerHTML = t.ratioTight;
-    ratioOpts[1].innerHTML = t.ratioNormal;
-    ratioOpts[2].innerHTML = t.ratioWide;
+        // Ratio options
+        const ratioOpts = document.querySelectorAll('.ratio-option');
+        ratioOpts[0].innerHTML = translationsTH.ratioTight;
+        ratioOpts[1].innerHTML = translationsTH.ratioNormal;
+        ratioOpts[2].innerHTML = translationsTH.ratioWide;
 
-    // Hot recipe title
-    document.querySelectorAll('.recipe-title')[0].innerHTML = `<span class="fire-emoji">🔥</span>${t.hotRecipe}`;
-    // Iced recipe title
-    document.querySelectorAll('.recipe-title')[1].innerHTML = `<span class="ice-emoji">🧊</span>${t.icedRecipe}`;
+        // Hot recipe title
+        document.querySelectorAll('.recipe-title')[0].innerHTML = `<span class="fire-emoji">🔥</span>${translationsTH.hotRecipe}`;
+        // Iced recipe title
+        document.querySelectorAll('.recipe-title')[1].innerHTML = `<span class="ice-emoji">🧊</span>${translationsTH.icedRecipe}`;
 
-    // Hot recipe steps
-    const hotSteps = document.querySelectorAll('.recipe-container ul.recipe-steps')[0].children;
-    hotSteps[0].childNodes[0].nodeValue = t.bloom + " ";
-    hotSteps[0].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
-    hotSteps[1].childNodes[0].nodeValue = t.pour + " ";
-    hotSteps[1].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
+        // Hot recipe steps
+        const hotSteps = document.querySelectorAll('.recipe-container ul.recipe-steps')[0].children;
+        hotSteps[0].childNodes[0].nodeValue = translationsTH.bloom + " ";
+        hotSteps[0].querySelector('span').nextSibling.nodeValue = translationsTH.gramsSuffix;
+        hotSteps[1].childNodes[0].nodeValue = translationsTH.pour + " ";
+        hotSteps[1].querySelector('span').nextSibling.nodeValue = translationsTH.gramsSuffix;
 
-    // Iced recipe steps
-    const icedSteps = document.querySelectorAll('.recipe-container ul.recipe-steps')[1].children;
-    icedSteps[0].childNodes[0].nodeValue = t.addIce + " ";
-    icedSteps[0].querySelector('span').nextSibling.nodeValue = t.addIceSuffix;
-    icedSteps[1].childNodes[0].nodeValue = t.pour + " ";
-    icedSteps[1].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
-    icedSteps[2].innerHTML = `<i>${t.agitate.replace('-', '')}</i>`;
-    icedSteps[3].childNodes[0].nodeValue = t.pourHeavy + " ";
-    icedSteps[3].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
-    icedSteps[4].childNodes[0].nodeValue = t.pourTo + " ";
-    icedSteps[4].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
-    icedSteps[5].innerHTML = `<i>${t.stirText.replace('-', '')}</i>`;
-    icedSteps[6].childNodes[0].nodeValue = t.finish;
+        // Iced recipe steps
+        const icedSteps = document.querySelectorAll('.recipe-container ul.recipe-steps')[1].children;
+        icedSteps[0].childNodes[0].nodeValue = translationsTH.addIce + " ";
+        icedSteps[0].querySelector('span').nextSibling.nodeValue = translationsTH.addIceSuffix;
+        icedSteps[1].childNodes[0].nodeValue = translationsTH.bloom + " ";
+        icedSteps[1].querySelector('span').nextSibling.nodeValue = translationsTH.gramsSuffix;
+        icedSteps[2].innerHTML = `<i>${translationsTH.agitate.replace('-', '')}</i>`;
+        icedSteps[3].childNodes[0].nodeValue = translationsTH.pourHeavy + " ";
+        icedSteps[3].querySelector('span').nextSibling.nodeValue = translationsTH.gramsSuffix;
+        icedSteps[4].childNodes[0].nodeValue = translationsTH.pourTo + " ";
+        icedSteps[4].querySelector('span').nextSibling.nodeValue = translationsTH.gramsSuffix;
+        icedSteps[5].innerHTML = `<i>${translationsTH.stirText.replace('-', '')}</i>`;
+        icedSteps[6].childNodes[0].nodeValue = translationsTH.finish;
 
-    // Infobox
-    document.querySelector('.infobox').innerHTML = `<span class="tip-emoji">💡</span>${t.grindFiner}`;
+        // Infobox
+        document.querySelector('.infobox').innerHTML = `<span class="tip-emoji">✅</span>${translationsTH.grindFiner}`;
 
-    // Iced ratio label
-    const icedIdx = getIcedRatioIndex();
-    const icedRatioLabels = [t.icedRatioTight, t.icedRatioNormal, t.icedRatioWide];
-    icedRatioLabel.textContent = icedRatioLabels[icedIdx];
+        // Iced ratio label
+        const icedIdx = getIcedRatioIndex();
+        const icedRatioLabels = [translationsTH.icedRatioTight, translationsTH.icedRatioNormal, translationsTH.icedRatioWide];
+        icedRatioLabel.textContent = icedRatioLabels[icedIdx];
 
-    // Button text
-    document.getElementById('lang-toggle').textContent = lang === 'en' ? t.thai : t.english;
+        // Button text
+        document.getElementById('lang-toggle').textContent = translationsTH.langBtn;
+    } else {
+        // Restore English by resetting to the original HTML/defaults
+
+        // Grams label
+        document.querySelector('.grams-label').childNodes[0].nodeValue = "Grams of coffee ";
+
+        // Ratio text
+        document.querySelector('.ratio-text').textContent = "Ratio";
+
+        // Ratio options
+        const ratioOpts = document.querySelectorAll('.ratio-option');
+        ratioOpts[0].innerHTML = "Tight<br>(1:14)";
+        ratioOpts[1].innerHTML = "Normal<br>(1:16)";
+        ratioOpts[2].innerHTML = "Wide<br>(1:18)";
+
+        // Hot recipe title
+        document.querySelectorAll('.recipe-title')[0].innerHTML = `<span class="fire-emoji">🔥</span>Hot Recipe`;
+        // Iced recipe title
+        document.querySelectorAll('.recipe-title')[1].innerHTML = `<span class="ice-emoji">🧊</span>Iced Recipe`;
+
+        // Hot recipe steps
+        const hotSteps = document.querySelectorAll('.recipe-container ul.recipe-steps')[0].children;
+        hotSteps[0].childNodes[0].nodeValue = "Bloom to ";
+        hotSteps[0].querySelector('span').nextSibling.nodeValue = " g";
+        hotSteps[1].childNodes[0].nodeValue = "Pour to ";
+        hotSteps[1].querySelector('span').nextSibling.nodeValue = " g";
+
+        // Iced recipe steps
+        const icedSteps = document.querySelectorAll('.recipe-container ul.recipe-steps')[1].children;
+        icedSteps[0].childNodes[0].nodeValue = "Add ";
+        icedSteps[0].querySelector('span').nextSibling.nodeValue = " g ice to glass";
+        icedSteps[1].childNodes[0].nodeValue = "Bloom to ";
+        icedSteps[1].querySelector('span').nextSibling.nodeValue = " g";
+        icedSteps[2].innerHTML = "<i>Agitate</i>";
+        icedSteps[3].childNodes[0].nodeValue = "0:40 Pour heavy to ";
+        icedSteps[3].querySelector('span').nextSibling.nodeValue = " g";
+        icedSteps[4].childNodes[0].nodeValue = "1:10 Pour to ";
+        icedSteps[4].querySelector('span').nextSibling.nodeValue = " g";
+        icedSteps[5].innerHTML = "<i>Stir 3 times</i>";
+        icedSteps[6].childNodes[0].nodeValue = "2:10 Finish";
+
+        // Infobox
+        document.querySelector('.infobox').innerHTML = `<span class="tip-emoji">✅</span>Grind finer than usual`;
+
+        // Iced ratio label
+        const icedIdx = getIcedRatioIndex();
+        const icedRatioLabels = ["Tight (1:9)", "Normal (1:10)", "Wide (1:11)"];
+        icedRatioLabel.textContent = icedRatioLabels[icedIdx];
+
+        // Button text
+        document.getElementById('lang-toggle').textContent = "ภาษาไทย";
+    }
 }
 
 // Language toggle button
