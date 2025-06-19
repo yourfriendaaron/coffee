@@ -33,7 +33,7 @@ const translationsTH = {
     icedBloom: "บลูมถึง",
     icedPour1: "1:00 เทถึง",
     icedPour2: "1:45 เทถึง",
-    icedSwirl: "หมุนกาแฟให้หน้ากาแฟเรียบ ปล่อยให้ไหลหมด",
+    icedSwirl: "เขย่าเล็กน้อยให้หน้ากาแฟเรียบ ปล่อยให้น้ำไหลจนหมด",
     icedAddIce: "เติมน้ำแข็ง <span id='iced-ice'>60</span> กรัม ลงในคาราฟ คนจนเย็น",
     icedServe: "เสิร์ฟใส่น้ำแข็ง",
     gramsSuffix: " กรัม"
