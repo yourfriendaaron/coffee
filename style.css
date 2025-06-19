@@ -1,13 +1,36 @@
+/* =========================
+   ELEMENT SELECTORS
+   ========================= */
 body {
     background: #000000;
     color: #e0d6ff;
     font-family: 'Segoe UI', Arial, sans-serif;
     margin: 0;
     min-height: 100vh;
-    /* Add padding for mobile */
     padding: 0 0.5em;
 }
 
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    margin-bottom: 0.7em;
+    font-size: 1.1em;
+}
+
+input[type="range"] {
+    width: 100%;
+    margin-top: 1em;
+    accent-color: #d500f9;
+    background: transparent;
+}
+
+/* =========================
+   CLASS SELECTORS
+   ========================= */
 .slider-container,
 .recipe-container {
     width: 100%;
@@ -33,15 +56,27 @@ body {
     border: 1px solid #a21caf;
 }
 
-.grams-label {
+.grams-label,
+.ratio-selector {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: nowrap;
     width: 100%;
+    min-width: 0;
+    gap: 0.5em;
+}
+
+.grams-label {
     font-size: 1.2em;
     color: #ffffff;
     gap: 0;
-    flex-wrap: nowrap;
+}
+
+.grams-label .value {
+    width: 3.5em;
+    min-width: 0;
+    flex-shrink: 0;
 }
 
 .value {
@@ -53,6 +88,20 @@ body {
     min-width: 0;
     box-sizing: border-box;
     text-align: right;
+}
+
+.ratio-text {
+    color: #fff;
+    font-size: 1.2em;
+    margin-right: 1em;
+    white-space: nowrap;
+}
+
+.ratio-options {
+    display: flex;
+    gap: 0.5em;
+    flex-shrink: 1;
+    flex-wrap: nowrap;
 }
 
 .ratio-option {
@@ -74,27 +123,6 @@ body {
     color: #fff;
 }
 
-input[type="range"] {
-    width: 100%;
-    margin-top: 1em;
-    accent-color: #d500f9;
-    background: transparent;
-}
-
-.ratio-text {
-    color: #fff;
-    font-size: 1.2em;
-    margin-right: 1em;
-    white-space: nowrap;
-}
-
-.ratio-options {
-    display: flex;
-    gap: 0.5em;
-    flex-shrink: 1;
-    flex-wrap: nowrap;
-}
-
 .recipe-title {
     font-size: 1.3em;
     color: #ffffff;
@@ -110,27 +138,6 @@ input[type="range"] {
     font-size: 1.2em;
     margin-right: 8px;
     filter: drop-shadow(0 0 4px #a21caf);
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-li {
-    margin-bottom: 0.7em;
-    font-size: 1.1em;
-}
-
-#bloom-value,
-#pour-value,
-#ice-value,
-#iced-pour1,
-#iced-pour2,
-#iced-pour3 {
-    color: #d500f9;
-    font-weight: bold;
 }
 
 .infobox {
@@ -161,44 +168,40 @@ li {
     display: none; /* hidden */
 }
 
-/* Ensure these always stay on one line */
-.grams-label,
-.ratio-selector {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: nowrap;      /* Prevent wrapping */
-    width: 100%;
-    min-width: 0;
-    gap: 0.5em;
-}
-
-/* Prevent input and ratio options from growing too wide */
-.grams-label .value {
-    width: 3.5em;
-    min-width: 0;
-    flex-shrink: 0;
-}
-
-.ratio-text {
-    white-space: nowrap;
-    margin-right: 1em;
-}
-
-.ratio-options {
-    display: flex;
-    gap: 0.5em;
-    flex-shrink: 1;
-    flex-wrap: nowrap;
-}
-
 .recipe-steps {
     margin-top: 1em;
     font-size: 1.1em;
     line-height: 1.1;
 }
 
-/* Remove column layout for these on mobile */
+/* =========================
+   ID SELECTORS
+   ========================= */
+#bloom-value,
+#pour-value,
+#ice-value,
+#iced-pour1,
+#iced-pour2,
+#iced-pour3 {
+    color: #d500f9;
+    font-weight: bold;
+}
+
+#lang-toggle {
+    display: block;
+    margin: 2em auto 1em auto;
+    padding: 0.7em 2em;
+    font-size: 1.1em;
+    border-radius: 0.5em;
+    border: none;
+    background: #a21caf;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
 @media (max-width: 500px) {
     .slider-container,
     .recipe-container {
