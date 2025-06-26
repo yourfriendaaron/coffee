@@ -75,6 +75,8 @@ const translations = {
     }
 };
 
+
+
 let currentLang = 'en';
 
 function getIcedRatioData() {
