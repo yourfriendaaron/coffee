@@ -86,23 +86,25 @@ function updateRecipe(grind) {
     if (typeof grind === "undefined") {
         grind = parseInt(dom.slider.value, 10);
     }
-    grind = Math.max(10, Math.min(40, Math.round(grind)));
+    // The value from the input might be NaN if the user deletes the content.
+    if (isNaN(grind)) {
+        return; // Do nothing if the value is not a number.
+    }
+    const recipeGrind = Math.round(grind);
 
     // Hot recipe calculations
-    const bloom = Math.round(grind * 3);
-    const pour = Math.round(grind * selectedRatio);
-    dom.valueInput.value = grind;
+    const bloom = Math.round(recipeGrind * 3);
+    const pour = Math.round(recipeGrind * selectedRatio);
     dom.bloomValue.textContent = bloom;
     dom.pourValue.textContent = pour;
 
     // Iced recipe calculations (new logic)
     const icedData = getIcedRatioData();
     const icedRatio = icedData.ratio;
-
-    const icedBloom = Math.round(grind * 3);
-    const icedPour1 = Math.round(grind * icedRatio * 0.625);
-    const icedPour2 = Math.round(grind * icedRatio);
-    const icedIce = Math.round(grind * icedRatio * 0.25);
+    const icedBloom = Math.round(recipeGrind * 3);
+    const icedPour1 = Math.round(recipeGrind * icedRatio * 0.625);
+    const icedPour2 = Math.round(recipeGrind * icedRatio);
+    const icedIce = Math.round(recipeGrind * icedRatio * 0.25);
 
     dom.icedBloom.textContent = icedBloom;
     dom.icedPour1.textContent = icedPour1;
@@ -128,8 +130,8 @@ dom.slider.addEventListener('input', () => {
 dom.valueInput.addEventListener('input', () => {
     const val = parseInt(dom.valueInput.value, 10);
     if (!isNaN(val)) {
-        // Sync slider and recipe in real-time
-        // updateRecipe will handle clamping for the calculation
+        // Sync slider (clamping its value) and update recipe with the raw typed value.
+        // The input box itself is not clamped until the 'change' event.
         dom.slider.value = Math.max(10, Math.min(40, val));
         updateRecipe(val);
     }
