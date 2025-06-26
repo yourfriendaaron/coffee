@@ -1,4 +1,4 @@
-const dom = {
+const domElements = {
     slider: document.getElementById('coffee-slider'),
     valueInput: document.getElementById('coffee-value'),
     bloomValue: document.getElementById('bloom-value'),
@@ -16,6 +16,8 @@ const dom = {
     hotRecipeSteps: document.querySelectorAll('.recipe-container ul.recipe-steps')[0].children,
     icedRecipeSteps: document.querySelectorAll('.recipe-container ul.recipe-steps')[1].children,
     infobox: document.querySelector('.infobox'),
+    copyHotBtn: document.getElementById('copy-hot-btn'),
+    copyIcedBtn: document.getElementById('copy-iced-btn'),
 };
 
 // Ratio selector logic
@@ -45,11 +47,14 @@ const translations = {
         pour: "Pour to",
         grindFiner: "Grind finer than usual",
         langBtn: "ภาษาไทย",
+        copyBtn: "Copy Recipe",
+        copiedBtn: "Copied!",
         icedBloom: "Bloom to",
         icedPour1: "1:00 Pour to",
         icedPour2: "1:45 Pour to",
         icedSwirl: "Swirl to flatten the bed and let it drain completely.",
-        icedAddIce: "Add <span id='iced-ice'>{iceAmount}</span> g ice to carafe, stir until cooled.",
+        icedAddIce: "Add <span id='iced-ice'>{iceAmount}</span> g ice to carafe, stir until cooled.", // For display
+        icedAddIceClipboard: "Add {iceAmount} g ice to carafe, stir until cooled.", // For clipboard
         icedServe: "Serve over ice.",
         gramsSuffix: " g"
     },
@@ -65,13 +70,39 @@ const translations = {
         pour: "เทถึง",
         grindFiner: "บดให้ละเอียดกว่าปกติ",
         langBtn: "English",
+        copyBtn: "คัดลอกสูตร",
+        copiedBtn: "คัดลอกแล้ว!",
         icedBloom: "บลูมถึง",
         icedPour1: "1:00 เทถึง",
         icedPour2: "1:45 เทถึง",
         icedSwirl: "เขย่าเล็กน้อยให้หน้ากาแฟเรียบ ปล่อยให้น้ำไหลจนหมด",
-        icedAddIce: "เติมน้ำแข็ง <span id='iced-ice'>{iceAmount}</span> กรัม ลงในคาราฟ คนจนเย็น",
+        icedAddIce: "เติมน้ำแข็ง <span id='iced-ice'>{iceAmount}</span> กรัม ลงในคาราฟ คนจนเย็น", // For display
+        icedAddIceClipboard: "เติมน้ำแข็ง {iceAmount} กรัม ลงในคาราฟ คนจนเย็น", // For clipboard
         icedServe: "เสิร์ฟใส่น้ำแข็ง",
         gramsSuffix: " กรัม"
+    },
+    ja: {
+        gramsLabel: "グラムのコーヒー",
+        ratio: "比率",
+        ratioTight: "濃いめ<br>(1:14)",
+        ratioNormal: "普通<br>(1:16)",
+        ratioWide: "薄め<br>(1:18)",
+        hotRecipe: "ホットレシピ",
+        icedRecipe: "アイスレシピ",
+        bloom: "ブルームまで",
+        pour: "注ぐまで",
+        grindFiner: "通常よりも細かく挽く",
+        langBtn: "English",
+        copyBtn: "レシピをコピー",
+        copiedBtn: "コピーしました！",
+        icedBloom: "ブルームまで",
+        icedPour1: "1:00 注ぐまで",
+        icedPour2: "1:45 注ぐまで",
+        icedSwirl: "粉の層を平らにするために軽く揺らし、完全に抽出されるまで待つ。",
+        icedAddIce: "カラフェに<span id='iced-ice'>{iceAmount}</span>gの氷を加え、冷えるまでかき混ぜる。",
+        icedAddIceClipboard: "カラフェに{iceAmount}gの氷を加え、冷えるまでかき混ぜる。",
+        icedServe: "氷を入れて提供する。",
+        gramsSuffix: " g"
     }
 };
 
@@ -84,7 +115,7 @@ function getIcedRatioData() {
 
 function updateRecipe(grind) {
     if (typeof grind === "undefined") {
-        grind = parseInt(dom.slider.value, 10);
+        grind = parseInt(domElements.slider.value, 10);
     }
     // The value from the input might be NaN if the user deletes the content.
     if (isNaN(grind)) {
@@ -95,133 +126,190 @@ function updateRecipe(grind) {
     // Hot recipe calculations
     const bloom = Math.round(recipeGrind * 3);
     const pour = Math.round(recipeGrind * selectedRatio);
-    dom.bloomValue.textContent = bloom;
-    dom.pourValue.textContent = pour;
+    domElements.bloomValue.textContent = bloom;
+    domElements.pourValue.textContent = pour;
 
     // Iced recipe calculations (new logic)
     const icedData = getIcedRatioData();
     const icedRatio = icedData.ratio;
     const icedBloom = Math.round(recipeGrind * 3);
     const icedPour1 = Math.round(recipeGrind * icedRatio * 0.625);
-    const icedPour2 = Math.round(recipeGrind * icedRatio);
+    const icedPour2 = Math.round(recipeGrind * icedRatio); 
     const icedIce = Math.round(recipeGrind * icedRatio * 0.25);
 
-    dom.icedBloom.textContent = icedBloom;
-    dom.icedPour1.textContent = icedPour1;
-    dom.icedPour2.textContent = icedPour2;
-    dom.icedIce.textContent = icedIce;
+    domElements.icedBloom.textContent = icedBloom;
+    domElements.icedPour1.textContent = icedPour1;
+    domElements.icedPour2.textContent = icedPour2;
+    domElements.icedIce.textContent = icedIce;
 
     // Update iced ratio label in current language (hide in Thai)
-    dom.icedRatioLabel.textContent = currentLang === 'en' ? icedData.label : "";
+    domElements.icedRatioLabel.textContent = currentLang === 'en' ? icedData.label : "";
 
     // Update dynamic text in recipe steps
     const t = translations[currentLang];
-    dom.icedRecipeSteps[4].innerHTML = t.icedAddIce.replace("{iceAmount}", icedIce);
+    domElements.icedRecipeSteps[4].innerHTML = t.icedAddIce.replace("{iceAmount}", icedIce);
 }
 
 // Sync slider to number input
-dom.slider.addEventListener('input', () => {
-    const val = parseInt(dom.slider.value, 10);
-    dom.valueInput.value = val;
+domElements.slider.addEventListener('input', () => {
+    const val = parseInt(domElements.slider.value, 10);
+    domElements.valueInput.value = val;
     updateRecipe(val);
 });
 
 // Allow typing freely in the number box, only update if valid and don't clamp
-dom.valueInput.addEventListener('input', () => {
-    const val = parseInt(dom.valueInput.value, 10);
+domElements.valueInput.addEventListener('input', () => {
+    const val = parseInt(domElements.valueInput.value, 10);
     if (!isNaN(val)) {
         // Sync slider (clamping its value) and update recipe with the raw typed value.
         // The input box itself is not clamped until the 'change' event.
-        dom.slider.value = Math.max(10, Math.min(40, val));
+        domElements.slider.value = Math.max(10, Math.min(40, val));
         updateRecipe(val);
     }
 });
 
 // Clamp and sync on blur or enter
-dom.valueInput.addEventListener('change', () => {
-    let val = parseInt(dom.valueInput.value, 10);
+domElements.valueInput.addEventListener('change', () => {
+    let val = parseInt(domElements.valueInput.value, 10);
     // If the input is blank or not a number, set to 10
-    if (dom.valueInput.value === "" || isNaN(val)) val = 10;
+    if (domElements.valueInput.value === "" || isNaN(val)) val = 10;
     val = Math.max(10, Math.min(40, val));
-    dom.valueInput.value = val;
-    dom.slider.value = val;
+    domElements.valueInput.value = val;
+    domElements.slider.value = val;
     updateRecipe(val);
 });
 
 // Highlight all text when the grams input is focused
-dom.valueInput.addEventListener('focus', function() {
+domElements.valueInput.addEventListener('focus', function() {
     this.select();
 });
 
 // Ratio option click event
-dom.ratioOptions.forEach(option => {
+domElements.ratioOptions.forEach(option => {
     option.addEventListener('click', () => {
-        dom.ratioOptions.forEach(opt => opt.classList.remove('selected'));
+        domElements.ratioOptions.forEach(opt => opt.classList.remove('selected'));
         option.classList.add('selected');
         selectedRatio = parseInt(option.getAttribute('data-ratio'), 10);
-        updateRecipe(parseInt(dom.valueInput.value, 10));
+        updateRecipe(parseInt(domElements.valueInput.value, 10));
         setLanguage(currentLang); // update iced ratio label
     });
 });
 
 // --- Language toggle logic ---
 
-function setLanguage(lang) {
+function setLanguage(lang) { 
     currentLang = lang;
     const t = translations[lang];
 
     // Grams label
-    dom.gramsLabelText.nodeValue = t.gramsLabel + " ";
+    domElements.gramsLabelText.nodeValue = t.gramsLabel + " ";
 
     // Ratio text
-    dom.ratioText.textContent = t.ratio;
+    domElements.ratioText.textContent = t.ratio;
 
     // Ratio options
-    dom.ratioOptions[0].innerHTML = t.ratioTight;
-    dom.ratioOptions[1].innerHTML = t.ratioNormal;
-    dom.ratioOptions[2].innerHTML = t.ratioWide;
+    domElements.ratioOptions[0].innerHTML = t.ratioTight;
+    domElements.ratioOptions[1].innerHTML = t.ratioNormal;
+    domElements.ratioOptions[2].innerHTML = t.ratioWide;
 
     // Recipe titles
-    dom.recipeTitles[0].innerHTML = `<span class="fire-emoji">🔥</span>${t.hotRecipe}`;
-    dom.recipeTitles[1].innerHTML = `<span class="ice-emoji">🧊</span>${t.icedRecipe}`;
+    domElements.recipeTitles[0].innerHTML = `<span class="fire-emoji">🔥</span>${t.hotRecipe}`;
+    domElements.recipeTitles[1].innerHTML = `<span class="ice-emoji">🧊</span>${t.icedRecipe}`;
 
     // Hot recipe steps
-    dom.hotRecipeSteps[0].childNodes[0].nodeValue = t.bloom + " ";
-    dom.hotRecipeSteps[0].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
-    dom.hotRecipeSteps[1].childNodes[0].nodeValue = t.pour + " ";
-    dom.hotRecipeSteps[1].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
+    domElements.hotRecipeSteps[0].childNodes[0].nodeValue = t.bloom + " ";
+    domElements.hotRecipeSteps[0].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
+    domElements.hotRecipeSteps[1].childNodes[0].nodeValue = t.pour + " ";
+    domElements.hotRecipeSteps[1].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
 
     // Iced recipe steps
-    dom.icedRecipeSteps[0].childNodes[0].nodeValue = t.icedBloom + " ";
-    dom.icedRecipeSteps[0].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
-    dom.icedRecipeSteps[1].childNodes[0].nodeValue = t.icedPour1 + " ";
-    dom.icedRecipeSteps[1].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
-    dom.icedRecipeSteps[2].childNodes[0].nodeValue = t.icedPour2 + " ";
-    dom.icedRecipeSteps[2].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
-    dom.icedRecipeSteps[3].textContent = t.icedSwirl;
-    dom.icedRecipeSteps[4].innerHTML = t.icedAddIce.replace("{iceAmount}", dom.icedIce.textContent);
-    dom.icedRecipeSteps[5].textContent = t.icedServe;
+    domElements.icedRecipeSteps[0].childNodes[0].nodeValue = t.icedBloom + " ";
+    domElements.icedRecipeSteps[0].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
+    domElements.icedRecipeSteps[1].childNodes[0].nodeValue = t.icedPour1 + " ";
+    domElements.icedRecipeSteps[1].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
+    domElements.icedRecipeSteps[2].childNodes[0].nodeValue = t.icedPour2 + " ";
+    domElements.icedRecipeSteps[2].querySelector('span').nextSibling.nodeValue = t.gramsSuffix;
+    domElements.icedRecipeSteps[3].textContent = t.icedSwirl;
+    domElements.icedRecipeSteps[4].innerHTML = t.icedAddIce.replace("{iceAmount}", domElements.icedIce.textContent);
+    domElements.icedRecipeSteps[5].textContent = t.icedServe;
 
     // Infobox
-    dom.infobox.innerHTML = `<span class="tip-emoji">✅</span>${t.grindFiner}`;
+    domElements.infobox.innerHTML = `<span class="tip-emoji">✅</span>${t.grindFiner}`;
 
     // Iced ratio label (show in English, hide in Thai)
     const icedData = getIcedRatioData();
-    dom.icedRatioLabel.textContent = lang === 'en' ? icedData.label : "";
+    domElements.icedRatioLabel.textContent = lang === 'en' ? icedData.label : "";
 
     // Button text
-    dom.langToggle.textContent = t.langBtn;
+    domElements.langToggle.textContent = t.langBtn;
+    domElements.copyHotBtn.textContent = t.copyBtn;
+    domElements.copyIcedBtn.textContent = t.copyBtn;
 }
 
 // Language toggle button
-dom.langToggle.addEventListener('click', function() {
-    setLanguage(currentLang === 'en' ? 'th' : 'en');
-    updateRecipe(parseInt(dom.valueInput.value, 10));
+domElements.langToggle.addEventListener('click', function() {
+    const languages = ['en', 'th', 'ja'];
+    const currentIndex = languages.indexOf(currentLang);
+    const nextIndex = (currentIndex + 1) % languages.length;
+    setLanguage(languages[nextIndex]);
+    updateRecipe(parseInt(domElements.valueInput.value, 10));
 });
+
+// --- Clipboard logic ---
+
+function copyRecipeToClipboard(recipeType) {
+    const t = translations[currentLang];
+    const grind = domElements.valueInput.value;
+    let recipeText = '';
+    let button;
+
+    if (recipeType === 'hot') {
+        button = domElements.copyHotBtn;
+        const bloom = domElements.bloomValue.textContent;
+        const pour = domElements.pourValue.textContent;
+
+        recipeText = `${t.hotRecipe} (1:${selectedRatio})\n` +
+            `Coffee: ${grind}${t.gramsSuffix}\n\n` +
+            `- ${t.bloom} ${bloom}${t.gramsSuffix}\n` +
+            `- ${t.pour} ${pour}${t.gramsSuffix}`;
+
+    } else if (recipeType === 'iced') {
+        button = domElements.copyIcedBtn;
+        const icedData = getIcedRatioData();
+        const bloom = domElements.icedBloom.textContent;
+        const pour1 = domElements.icedPour1.textContent;
+        const pour2 = domElements.icedPour2.textContent;
+        const ice = domElements.icedIce.textContent;
+
+        recipeText = `${t.icedRecipe} (1:${icedData.ratio})\n` +
+            `Coffee: ${grind}${t.gramsSuffix}\n\n` +
+            `- ${t.grindFiner}\n` +
+            `- ${t.icedBloom} ${bloom}${t.gramsSuffix}\n` +
+            `- ${t.icedPour1} ${pour1}${t.gramsSuffix}\n` +
+            `- ${t.icedPour2} ${pour2}${t.gramsSuffix}\n` +
+            `- ${t.icedSwirl}\n` +
+            `- ${t.icedAddIceClipboard.replace("{iceAmount}", ice)}\n` +
+            `- ${t.icedServe}`;
+    }
+
+    navigator.clipboard.writeText(recipeText).then(() => {
+        const originalText = button.textContent;
+        button.textContent = t.copiedBtn;
+        setTimeout(() => {
+            button.textContent = originalText;
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+        alert('Failed to copy recipe.');
+    });
+}
+
+domElements.copyHotBtn.addEventListener('click', () => copyRecipeToClipboard('hot'));
+domElements.copyIcedBtn.addEventListener('click', () => copyRecipeToClipboard('iced'));
 
 // On load, set initial language
 setLanguage('en');
 
 // Initialize values
-dom.slider.value = dom.valueInput.value;
-updateRecipe(parseInt(dom.slider.value, 10));
+domElements.slider.value = domElements.valueInput.value;
+updateRecipe(parseInt(domElements.slider.value, 10));
