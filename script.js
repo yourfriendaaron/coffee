@@ -16,15 +16,10 @@ const domElements = {
     hotRecipeSteps: document.querySelectorAll('.recipe-container ul.recipe-steps')[0].children,
     icedRecipeSteps: document.querySelectorAll('.recipe-container ul.recipe-steps')[1].children,
     infobox: document.querySelector('.infobox'),
-    copyHotBtn: document.getElementById('copy-hot-btn'),
-    copyIcedBtn: document.getElementById('copy-iced-btn'),
 };
 
 // Ratio selector logic
 let selectedRatio = 16; // default (matches .selected in HTML)
-
-// Iced recipe elements
-const icedRatioLabel = document.getElementById('iced-ratio-label');
 
 // Iced ratios mapping (tight: 1-11, normal: 1-12, wide: 1-13)
 const icedRatios = [
@@ -33,78 +28,6 @@ const icedRatios = [
     { name: "Wide", ratio: 13, label: "Wide (1:13)" }
 ];
 const hotToIcedRatioMap = { 14: 0, 16: 1, 18: 2 };
-
-const translations = {
-    en: {
-        gramsLabel: "Grams of coffee",
-        ratio: "Ratio",
-        ratioTight: "Tight<br>(1:14)",
-        ratioNormal: "Normal<br>(1:16)",
-        ratioWide: "Wide<br>(1:18)",
-        hotRecipe: "Hot Recipe",
-        icedRecipe: "Iced Recipe",
-        bloom: "Bloom to",
-        pour: "Pour to",
-        grindFiner: "Grind finer than usual",
-        langBtn: "ภาษาไทย",
-        copyBtn: "Copy Recipe",
-        copiedBtn: "Copied!",
-        icedBloom: "Bloom to",
-        icedPour1: "1:00 Pour to",
-        icedPour2: "1:45 Pour to",
-        icedSwirl: "Swirl to flatten the bed and let it drain completely.",
-        icedAddIce: "Add <span id='iced-ice'>{iceAmount}</span> g ice to carafe, stir until cooled.", // For display
-        icedAddIceClipboard: "Add {iceAmount} g ice to carafe, stir until cooled.", // For clipboard
-        icedServe: "Serve over ice.",
-        gramsSuffix: " g"
-    },
-    th: {
-        gramsLabel: "กรัมของกาแฟ",
-        ratio: "อัตราส่วน",
-        ratioTight: "เข้ม<br>(1:14)",
-        ratioNormal: "ปกติ<br>(1:16)",
-        ratioWide: "อ่อน<br>(1:18)",
-        hotRecipe: "สูตรร้อน",
-        icedRecipe: "สูตรเย็น",
-        bloom: "บลูมถึง",
-        pour: "เทถึง",
-        grindFiner: "บดให้ละเอียดกว่าปกติ",
-        langBtn: "English",
-        copyBtn: "คัดลอกสูตร",
-        copiedBtn: "คัดลอกแล้ว!",
-        icedBloom: "บลูมถึง",
-        icedPour1: "1:00 เทถึง",
-        icedPour2: "1:45 เทถึง",
-        icedSwirl: "เขย่าเล็กน้อยให้หน้ากาแฟเรียบ ปล่อยให้น้ำไหลจนหมด",
-        icedAddIce: "เติมน้ำแข็ง <span id='iced-ice'>{iceAmount}</span> กรัม ลงในคาราฟ คนจนเย็น", // For display
-        icedAddIceClipboard: "เติมน้ำแข็ง {iceAmount} กรัม ลงในคาราฟ คนจนเย็น", // For clipboard
-        icedServe: "เสิร์ฟใส่น้ำแข็ง",
-        gramsSuffix: " กรัม"
-    },
-    ja: {
-        gramsLabel: "グラムのコーヒー",
-        ratio: "比率",
-        ratioTight: "濃いめ<br>(1:14)",
-        ratioNormal: "普通<br>(1:16)",
-        ratioWide: "薄め<br>(1:18)",
-        hotRecipe: "ホットレシピ",
-        icedRecipe: "アイスレシピ",
-        bloom: "ブルームまで",
-        pour: "注ぐまで",
-        grindFiner: "通常よりも細かく挽く",
-        langBtn: "English",
-        copyBtn: "レシピをコピー",
-        copiedBtn: "コピーしました！",
-        icedBloom: "ブルームまで",
-        icedPour1: "1:00 注ぐまで",
-        icedPour2: "1:45 注ぐまで",
-        icedSwirl: "粉の層を平らにするために軽く揺らし、完全に抽出されるまで待つ。",
-        icedAddIce: "カラフェに<span id='iced-ice'>{iceAmount}</span>gの氷を加え、冷えるまでかき混ぜる。",
-        icedAddIceClipboard: "カラフェに{iceAmount}gの氷を加え、冷えるまでかき混ぜる。",
-        icedServe: "氷を入れて提供する。",
-        gramsSuffix: " g"
-    }
-};
 
 let currentLang = 'en';
 
@@ -196,7 +119,6 @@ domElements.ratioOptions.forEach(option => {
 });
 
 // --- Language toggle logic ---
-
 function setLanguage(lang) { 
     currentLang = lang;
     const t = translations[lang];
@@ -236,80 +158,26 @@ function setLanguage(lang) {
     // Infobox
     domElements.infobox.innerHTML = `<span class="tip-emoji">✅</span>${t.grindFiner}`;
 
-    // Iced ratio label (show in English, hide in Thai)
-    const icedData = getIcedRatioData();
-    domElements.icedRatioLabel.textContent = lang === 'en' ? icedData.label : "";
-
-    // Button text
-    domElements.langToggle.textContent = t.langBtn;
-    domElements.copyHotBtn.textContent = t.copyBtn;
-    domElements.copyIcedBtn.textContent = t.copyBtn;
+    // UI elements text
+    domElements.langToggle.value = lang;
 }
 
 // Language toggle button
-domElements.langToggle.addEventListener('click', function() {
-    const languages = ['en', 'th', 'ja'];
-    const currentIndex = languages.indexOf(currentLang);
-    const nextIndex = (currentIndex + 1) % languages.length;
-    setLanguage(languages[nextIndex]);
+domElements.langToggle.addEventListener('change', function(event) {
+    const newLang = event.target.value;
+    setLanguage(newLang);
     updateRecipe(parseInt(domElements.valueInput.value, 10));
 });
 
-// --- Clipboard logic ---
+function initializeApp() {
+    // Set initial language and ensure the dropdown visually resets to English.
+    setLanguage('en');
 
-function copyRecipeToClipboard(recipeType) {
-    const t = translations[currentLang];
-    const grind = domElements.valueInput.value;
-    let recipeText = '';
-    let button;
-
-    if (recipeType === 'hot') {
-        button = domElements.copyHotBtn;
-        const bloom = domElements.bloomValue.textContent;
-        const pour = domElements.pourValue.textContent;
-
-        recipeText = `${t.hotRecipe} (1:${selectedRatio})\n` +
-            `Coffee: ${grind}${t.gramsSuffix}\n\n` +
-            `- ${t.bloom} ${bloom}${t.gramsSuffix}\n` +
-            `- ${t.pour} ${pour}${t.gramsSuffix}`;
-
-    } else if (recipeType === 'iced') {
-        button = domElements.copyIcedBtn;
-        const icedData = getIcedRatioData();
-        const bloom = domElements.icedBloom.textContent;
-        const pour1 = domElements.icedPour1.textContent;
-        const pour2 = domElements.icedPour2.textContent;
-        const ice = domElements.icedIce.textContent;
-
-        recipeText = `${t.icedRecipe} (1:${icedData.ratio})\n` +
-            `Coffee: ${grind}${t.gramsSuffix}\n\n` +
-            `- ${t.grindFiner}\n` +
-            `- ${t.icedBloom} ${bloom}${t.gramsSuffix}\n` +
-            `- ${t.icedPour1} ${pour1}${t.gramsSuffix}\n` +
-            `- ${t.icedPour2} ${pour2}${t.gramsSuffix}\n` +
-            `- ${t.icedSwirl}\n` +
-            `- ${t.icedAddIceClipboard.replace("{iceAmount}", ice)}\n` +
-            `- ${t.icedServe}`;
-    }
-
-    navigator.clipboard.writeText(recipeText).then(() => {
-        const originalText = button.textContent;
-        button.textContent = t.copiedBtn;
-        setTimeout(() => {
-            button.textContent = originalText;
-        }, 2000);
-    }).catch(err => {
-        console.error('Failed to copy text: ', err);
-        alert('Failed to copy recipe.');
-    });
+    // Initialize recipe values.
+    domElements.slider.value = domElements.valueInput.value; // Set the slider value
+    updateRecipe(); // Let updateRecipe read the slider value itself
 }
 
-domElements.copyHotBtn.addEventListener('click', () => copyRecipeToClipboard('hot'));
-domElements.copyIcedBtn.addEventListener('click', () => copyRecipeToClipboard('iced'));
-
-// On load, set initial language
-setLanguage('en');
-
-// Initialize values
-domElements.slider.value = domElements.valueInput.value;
-updateRecipe(parseInt(domElements.slider.value, 10));
+// Using 'load' ensures our script runs after the browser might restore form state,
+// guaranteeing the language selector is correctly reset.
+window.addEventListener('load', initializeApp);
